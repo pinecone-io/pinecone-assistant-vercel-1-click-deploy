@@ -330,10 +330,11 @@ function ChatMessageBlock({
     
     // Recursively process React elements
     if (React.isValidElement(node)) {
-      const children = node.props?.children;
+      const props = node.props as any;
+      const children = props?.children;
       if (children !== undefined && children !== null) {
         const processedChildren = React.Children.map(children, processNodeForCitations);
-        return React.cloneElement(node, { ...node.props, children: processedChildren });
+        return React.cloneElement(node as any, { ...props, children: processedChildren });
       }
     }
     

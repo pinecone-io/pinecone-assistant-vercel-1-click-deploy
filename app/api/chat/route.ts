@@ -18,13 +18,20 @@ export async function POST(req: NextRequest) {
 
     const assistant = getAssistant(assistantName);
 
+    // Sanitize messages to only include 'role' and 'content' (required by SDK)
+    // The SDK rejects messages with extra properties like 'citations'
+    const sanitizedMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         try {
           // Use SDK's chatStream method
           const chatStream = await assistant.chatStream({
-              messages,
+              messages: sanitizedMessages,
               model: 'gpt-4.1',
           });
 
