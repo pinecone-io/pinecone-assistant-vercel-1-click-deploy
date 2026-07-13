@@ -5,11 +5,11 @@ export const runtime = 'nodejs';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { fileId: string } }
+  { params }: { params: Promise<{ fileId: string }> }
 ) {
   try {
     const assistantName = process.env.PINECONE_ASSISTANT_NAME;
-    
+
     if (!assistantName) {
       return NextResponse.json(
         { error: 'PINECONE_ASSISTANT_NAME environment variable is not set' },
@@ -17,7 +17,7 @@ export async function GET(
       );
     }
 
-    const fileId = params.fileId;
+    const { fileId } = await params;
     
     if (!fileId) {
       return NextResponse.json(
